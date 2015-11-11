@@ -6,4 +6,3 @@ Le jeuxvideo.com de l'amour et du hasard est un générateur de pièce de théâ
 
   - Une scène par topic, un forum par acte
   - Les smileys communs sont réinterprétés en didascalies
-  - Pas de topics épinglés, pas de topics trop longs (limite à définir)
