@@ -44,6 +44,7 @@ function cleanHTML($page){
   $page = str_replace("<p>", "", $page);
   $page = str_replace("</p>", "", $page);
   $page = str_replace("<br>", ":saut de ligne:", $page);
+  $page = preg_replace("~<blockquote(.*?)>(.*)</blockquote>~si","", $page);
   preg_match_all("/<img[^>]+\>/i", $page, $matchImg);
   $matchImg = array_unique($matchImg[0]);
   foreach ($matchImg as $key => $img) {
@@ -71,16 +72,51 @@ function getPosts($topicUrl){
       $post = (object) array('user' => $userNodes->item($i)->nodeValue, 'text' => $textNodes->item($i)->nodeValue);
       $posts[] = $post;
     }
-    $nextPage = $topicXpath->query('//*[@class="pagi-after"]');
-    if($nextPage->length > 0){
+    if(strstr($topicPage, ($pageCount + 1 ) . "-0-1-0") != false && strstr($topicPage, "Page suivante") != false){
+      $topicUrl = str_replace(($pageCount) . "-0-1-0", ($pageCount + 1 ) . "-0-1-0", $topicUrl);
       $pageCount++;
-      $topicUrl = str_replace(($pageCount-1) . "-0-1-0", $pageCount . "-0-1-0", $topicUrl);
     }
     else{
       $topicUrl = "";
     }
   }
   return $posts;
+}
+
+function getSentiments($text){
+    $sentiments = array();
+    if(strstr($text, ":)") != false) $sentiments[] = "souriant";
+    if(strstr($text, ":snif:") != false) $sentiments[] = "pleurant";
+    if(strstr($text, ":-)") != false) $sentiments[] = "très souriant";
+    if(strstr($text, ":snif2:") != false) $sentiments[] = "pleurant beaucoup";
+    if(strstr($text, ":hap:") != false) $sentiments[] = "hapiste";
+    if(strstr($text, ":noel:") != false) $sentiments[] = "noeliste";
+    if(strstr($text, ":(") != false) $sentiments[] = "triste";
+    if(strstr($text, ":-(") != false) $sentiments[] = "très triste";
+    if(strstr($text, ":cool:") != false) $sentiments[] = "cool";
+    if(strstr($text, ":rire:") != false) $sentiments[] = "riant";
+    if(strstr($text, ":ok:") != false) $sentiments[] = "d'accord";
+    if(strstr($text, ":ouch:") != false) $sentiments[] = "mimant la douleur";
+    if(strstr($text, ":doute:") != false) $sentiments[] = "doutant";
+    if(strstr($text, ":oui:") != false) $sentiments[] = "acquiesçant";
+    return $sentiments;
+}
+
+function removeSmileys($text){
+  $text = str_replace(":)", "", $text);
+  $text = str_replace(":snif:", "", $text);
+  $text = str_replace(":-)", "", $text);
+  $text = str_replace(":snif2:", "", $text);
+  $text = str_replace(":hap:", "", $text);
+  $text = str_replace(":noel:", "", $text);
+  $text = str_replace(":(", "", $text);
+  $text = str_replace(":-(", "", $text);
+  $text = str_replace(":cool:", "", $text);
+  $text = str_replace(":rire:", "", $text);
+  $text = str_replace(":ok:", "", $text);
+  $text = str_replace(":doute:", "", $text);
+  $text = str_replace(":oui:", "", $text);
+  return $text;
 }
 
 ?>
