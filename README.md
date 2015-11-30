@@ -8,6 +8,11 @@ Le jeuxvideo.com de l'amour et du hasard est un générateur de pièce de théâ
 
 Il s'agit de ma proposition numéro 1 pour [l'édition 2015 du NaNoGenMo](https://github.com/dariusk/NaNoGenMo-2015). L'idée m'est venue à la lecture de [cet article de L'Obs](http://tempsreel.nouvelobs.com/medias/20150924.OBS6430/antisemitisme-homophobie-fanatisme-jeuxvideo-com-la-ruche-a-fiel.html) à propos des forums de jeuxvideo.com où le journaliste écrit : `Ce forum, c’est comme une pièce de théâtre, parfois drôle, parfois dramatique.`
 
+## Exemple
+
+La première soumission de roman / pièce de théâtre de plus de 50000 mots est disponible ici : [Le jeuxvideo.com de l'amour et du hasard](http://louphole.com/apps/JeuxVideoAmourHasard/index.html)
+La pièce comporte 44 actes et 216 scènes. Il s'agit d'une tentative primaire mais avant tout produite dans le but de rendre un exemple de résultat fonctionnel avant la fin du mois de novembre 2015.
+
 ## Concept
 
 Il s'agit principalement de crawler différents topics des forums, récupérer les noms d'utilisateurs et messages et les réintégrer dans une mise en page propre à un texte dramatique.
