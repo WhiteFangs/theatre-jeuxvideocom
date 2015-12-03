@@ -38,6 +38,12 @@ $baseUrl = "http://www.jeuxvideo.com";
             font-family: Georgia;
         }
 
+        .liste-personnages{
+          text-align: center;
+          text-transform: uppercase;
+          margin-bottom: 2em;
+        }
+
         .personnage {
             text-align: center;
             text-transform: uppercase;
@@ -76,17 +82,29 @@ while($wordCount < 50000){
       echo '<div class="scene">';
       $posts = getPosts($topic->url);
       $posts = array_map("unserialize", array_unique(array_map("serialize", $posts)));
+      echo '<div class="liste-personnages">';
+      $users = array_map(function($e) {return $e->user;}, $posts);
+      $users = array_values(array_filter(array_unique($users)));
+      foreach ($users as $key => $user) {
+        if(!empty($user))
+          echo trim($user);
+        if($key != count($users) - 1)
+          echo ', ';
+      }
+      echo '</div>';
       foreach ($posts as $key => $post) {
         if(!empty($post->user)){
           $sentiments = getSentiments($post->text);
-          $post->text = removeSmileys($post->text);
+          $post->text = removeSmileys($post->text, true);
           echo '<div class="replique">';
           echo '<div class="personnage">' . trim($post->user);
           foreach ($sentiments as $key => $sent) {
-            echo '<em>, ';
-            if($key > 0)
-              echo 'puis ';
-            echo $sent . '</em>';
+            if(!empty($sent)){
+              echo '<em>, ';
+              if($key > 0)
+                echo 'puis ';
+              echo $sent . '</em>';
+            }
           }
           echo '</div>';
           echo '<div class="texte">' . $post->text . '</div>';

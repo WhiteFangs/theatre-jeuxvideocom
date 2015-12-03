@@ -84,25 +84,52 @@ function getPosts($topicUrl){
 }
 
 function getSentiments($text){
-    $sentiments = array();
-    if(strstr($text, ":)") != false) $sentiments[] = "souriant";
-    if(strstr($text, ":snif:") != false) $sentiments[] = "pleurant";
-    if(strstr($text, ":-)") != false) $sentiments[] = "très souriant";
-    if(strstr($text, ":snif2:") != false) $sentiments[] = "pleurant beaucoup";
-    if(strstr($text, ":hap:") != false) $sentiments[] = "hapiste";
-    if(strstr($text, ":noel:") != false) $sentiments[] = "noeliste";
-    if(strstr($text, ":(") != false) $sentiments[] = "triste";
-    if(strstr($text, ":-(") != false) $sentiments[] = "très triste";
-    if(strstr($text, ":cool:") != false) $sentiments[] = "cool";
-    if(strstr($text, ":rire:") != false) $sentiments[] = "riant";
-    if(strstr($text, ":ok:") != false) $sentiments[] = "d'accord";
-    if(strstr($text, ":ouch:") != false) $sentiments[] = "mimant la douleur";
-    if(strstr($text, ":doute:") != false) $sentiments[] = "doutant";
-    if(strstr($text, ":oui:") != false) $sentiments[] = "acquiesçant";
-    return $sentiments;
+  $sentiments = array();
+  $otherSentiments = array();
+  if(strstr($text, ":snif2:") != false) $sentiments[] = "pleurant beaucoup";
+  if(strstr($text, ":rire2:") != false) $sentiments[] = "riant avec malice";
+  $text = preg_replace("/:([^\s:]*?)\d+:/", ":$1:", $text);
+  if(strstr($text, ":)") != false) $sentiments[] = "souriant";
+  if(strstr($text, ":snif:") != false) $sentiments[] = "pleurant";
+  if(strstr($text, ":-)") != false) $sentiments[] = "très souriant";
+  if(strstr($text, ":hap:") != false) $sentiments[] = "hapiste";
+  if(strstr($text, ":noel:") != false) $sentiments[] = "noeliste";
+  if(strstr($text, ":(") != false) $sentiments[] = "triste";
+  if(strstr($text, ":-(") != false) $sentiments[] = "très triste";
+  if(strstr($text, ":cool:") != false) $sentiments[] = "cool";
+  if(strstr($text, ":rire:") != false) $sentiments[] = "riant";
+  if(strstr($text, ":ok:") != false) $sentiments[] = "d'accord";
+  if(strstr($text, ":ouch:") != false) $sentiments[] = "éberlué";
+  if(strstr($text, ":doute:") != false) $sentiments[] = "doutant";
+  if(strstr($text, ":oui:") != false) $sentiments[] = "acquiesçant";
+  if(strstr($text, ":d)") != false) $sentiments[] = "montrant vers la droite";
+  if(strstr($text, ":g)") != false) $sentiments[] = "montrant vers la gauche";
+  if(strstr($text, ":bave:") != false) $sentiments[] = "bavant";
+  if(strstr($text, ":o))") != false) $sentiments[] = "clownesque";
+  if(strstr($text, ":coeur:") != false) $sentiments[] = "amoureux";
+  if(strstr($text, ":up:") != false) $sentiments[] = "montrant vers le haut";
+  if(strstr($text, ":lol:") != false) $sentiments[] = "riant à gorge déployée";
+  if(strstr($text, ":question:") != false) $sentiments[] = "s'interrogeant";
+  if(strstr($text, ":honte:") != false) $sentiments[] = "honteux";
+  if(strstr($text, ":fete:") != false) $sentiments[] = "célébrant";
+  if(strstr($text, ":-p") != false) $sentiments[] = "tirant allégrement la langue";
+  if(strstr($text, ":p)") != false) $sentiments[] = "tirant la langue";
+  if(strstr($text, ":peur:") != false) $sentiments[] = "peureux";
+  if(strstr($text, ":hum:") != false) $sentiments[] = "embarrassé";
+  if(strstr($text, ":content:") != false) $sentiments[] = "content";
+  if(strstr($text, ":malade:") != false) $sentiments[] = "nauséeux";
+  if(strstr($text, ":pf:") != false) $sentiments[] = "désabusé";
+  $text = removeSmileys($text, false);
+  preg_match_all("/:([^\s:]*?):/", $text, $otherSentiments);
+  foreach ($otherSentiments[1] as $key => $sent) {
+    $sent = preg_replace('/\d/', "", $sent);
+    $sentiments[] = $sent;
+  }
+  $sentiments = array_unique($sentiments);
+  return $sentiments;
 }
 
-function removeSmileys($text){
+function removeSmileys($text, $removeAll){
   $text = str_replace(":)", "", $text);
   $text = str_replace(":snif:", "", $text);
   $text = str_replace(":-)", "", $text);
@@ -114,8 +141,29 @@ function removeSmileys($text){
   $text = str_replace(":cool:", "", $text);
   $text = str_replace(":rire:", "", $text);
   $text = str_replace(":ok:", "", $text);
+  $text = str_replace(":ouch:", "", $text);
   $text = str_replace(":doute:", "", $text);
   $text = str_replace(":oui:", "", $text);
+  $text = str_replace(":d)", "", $text);
+  $text = str_replace(":g)", "", $text);
+  $text = str_replace(":bave:", "", $text);
+  $text = str_replace(":o))", "", $text);
+  $text = str_replace(":coeur:", "", $text);
+  $text = str_replace(":up:", "", $text);
+  $text = str_replace(":lol:", "", $text);
+  $text = str_replace(":question:", "", $text);
+  $text = str_replace(":honte:", "", $text);
+  $text = str_replace(":fete:", "", $text);
+  $text = str_replace(":-p", "", $text);
+  $text = str_replace(":p)", "", $text);
+  $text = str_replace(":peur:", "", $text);
+  $text = str_replace(":hum:", "", $text);
+  $text = str_replace(":content:", "", $text);
+  $text = str_replace(":malade:", "", $text);
+  $text = str_replace(":rire2:", "", $text);
+  $text = str_replace(":pf:", "", $text);
+  if($removeAll)
+    $text = preg_replace("/:([^\s:]*?):/", "", $text);
   return $text;
 }
 
