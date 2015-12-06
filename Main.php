@@ -31,7 +31,8 @@ $baseUrl = "http://www.jeuxvideo.com";
         }
 
         h3 {
-            font-size: 2em;
+            font-size: 1.5em;
+            font-family: Georgia;
         }
 
         .scene {
