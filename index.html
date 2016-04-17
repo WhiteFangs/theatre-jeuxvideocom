@@ -1,0 +1,150 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Le jeuxvideo.com de l'amour et du hasard</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Tangerine" />
+    <style>
+        * {
+            text-align: center;
+            text-align: justify;
+        }
+
+        #content {
+            margin-left: auto;
+            margin-right: auto;
+            max-width: 800px;
+        }
+
+        h1, h2, h3 {
+            font-family: 'Tangerine', Georgia;
+            margin-left: auto;
+            margin-right: auto;
+            max-width: 800px;
+            text-align: center;
+            font-size: 3em;
+        }
+
+        h3 {
+            font-size: 1.5em;
+            font-family: Georgia;
+        }
+
+        .scene {
+            font-family: Georgia;
+        }
+
+        .liste-personnages {
+            text-align: center;
+            text-transform: uppercase;
+            margin-bottom: 2em;
+        }
+
+        .personnage {
+            text-align: center;
+            text-transform: uppercase;
+        }
+
+        em {
+            text-transform: none;
+        }
+
+        .texte {
+            margin-bottom: 2em;
+            margin-top: 1em;
+        }
+
+        #chargement {
+            font-family: 'Tangerine', Georgia;
+            font-size: 3em;
+            text-align: center;
+        }
+
+        #charger {
+            text-align: center;
+            display: none;
+        }
+
+            #charger input {
+                font-family: 'Tangerine', Georgia;
+                border: none;
+                font-size: 2.5em;
+                padding: .5em;
+                border-radius: 1em;
+                cursor: pointer;
+            }
+
+                #charger input:hover {
+                    box-shadow: grey 0px 0px 3px;
+                }
+    </style>
+</head>
+<body>
+    <div id="content">
+        <h1>Le jeuxvideo.com de l'amour et du hasard</h1>
+        <div id="chargement">
+            Écriture de la nouvelle scène en cours...
+        </div>
+        <div id="charger">
+            <input type="button" id="writeNext" value="Écrire la scène suivante" />
+        </div>
+    </div>
+    <script type="text/javascript" src="./jquery-2.0.3.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var acte = 1;
+            var scene = 1;
+
+            function writeNext() {
+                $("#charger").hide();
+                $("#chargement").show();
+                $.ajax({
+                    method: 'GET',
+                    url: './Main.php?acte=' + acte,
+                    dataType: 'json',
+                    success: function (data) {
+                        console.log(data);
+                        if (data.topic) {
+                            if (scene % 5 == 1)
+                                $("#chargement").before('<h2>Acte ' + acte.toString() + '</h2>');
+                            $("#chargement").before('<h3>Scène ' + scene.toString() + ': <a href="' + data.topic.url + '">' + data.topic.name + '</a></h3>');
+                            var listePersonnages = '<div class="liste-personnages">' + data.users.map(function (u) { return u.trim(); }).join(', ') + '</div>'
+                            var repliques = data.posts.map(function (p) {
+                                var rep = '<div class="replique"><div class="personnage">' + p.user.trim();
+                                if (p.sentiments.length > 0)
+                                    rep += '<em>, ' + p.sentiments.join(', puis ') + '</em>';
+                                rep += '</div><div class="texte">' + p.text + '</div>';
+                                return rep;
+                            }).join('');
+                            $("#chargement").before('<div class="scene">' + listePersonnages + repliques + '</div>');
+                            scene = (scene % 5) + 1;
+                            if (scene == 1)
+                                acte++;
+                        }
+                        $("#chargement").hide();
+                        $("#charger").show();
+                    }
+                });
+            }
+
+            $("#writeNext").on("click", writeNext);
+            writeNext();
+        });
+        /*
+        <h2>Acte </h2>
+        <h3>Scène : <a href=""></a></h3>
+        <div class="scene">
+            <div class="liste-personnages">
+            </div>
+            <div class="replique">
+                <div class="personnage">
+                    <em></em>
+                </div>
+                <div class="texte">
+                </div>
+            </div>
+        </div>
+        */
+    </script>
+</body>
+</html>
