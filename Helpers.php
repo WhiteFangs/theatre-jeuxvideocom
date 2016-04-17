@@ -28,8 +28,8 @@ function getTopics ($forumUrl) {
   $topics = array();
   $forumPage = getCURLOutput($forumUrl);
   $forumXpath = getDOMXPath($forumPage);
-  $topicsName = $forumXpath->query('//*[@class="titre-topic"]/a/text()');
-  $topicsNodes = $forumXpath->query('//*[@class="titre-topic"]/a');
+  $topicsName = $forumXpath->query('//*[@id="forum-main-col"]/div[3]/ul/li/span[1]/a/text()');
+  $topicsNodes = $forumXpath->query('//*[@id="forum-main-col"]/div[3]/ul/li/span[1]/a');
   foreach($topicsNodes as $key => $node) {
     if($key > 4){ // first 4 topics are often pinned
       $topic = (object) array('name' => $topicsName->item($key)->nodeValue, 'url' => $baseUrl . $node->getAttribute("href"));
